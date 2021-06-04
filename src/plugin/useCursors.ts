@@ -38,13 +38,13 @@ export const useCursors = (
         })
         .filter((cursor) => cursor.anchor && cursor.focus);
 
-      setCursorData((newCursorData as unknown) as Cursor[]);
+      setCursorData(newCursorData as unknown as Cursor[]);
     });
   }, [editor]);
 
   const decorate = useCallback(
     ([node, path]: NodeEntry) => {
-      const ranges: Range[] = [];
+      const ranges: any[] = [];
 
       if (Text.isText(node) && cursors?.length) {
         cursors.forEach((cursor) => {

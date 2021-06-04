@@ -2,6 +2,10 @@ import { Element, Node, Path, Text } from 'slate';
 import * as Y from 'yjs';
 import { SharedType, SyncElement } from '../model';
 
+function getText(text: Y.Text): Text {
+  return { text: text.toString() };
+}
+
 /**
  * Converts a sync element to a slate node
  *
@@ -11,16 +15,18 @@ export function toSlateNode(element: SyncElement): Node {
   const text = SyncElement.getText(element);
   const children = SyncElement.getChildren(element);
 
-  const node: Partial<Node> = {};
+  let node: Partial<Node> = {};
   if (text !== undefined) {
-    node.text = text.toString();
+    node = getText(text);
   }
   if (children !== undefined) {
-    node.children = children.map(toSlateNode);
+    (node as Element).children = children.map(toSlateNode);
   }
 
   Array.from(element.entries()).forEach(([key, value]) => {
     if (key !== 'children' && key !== 'text') {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       node[key] = value;
     }
   });

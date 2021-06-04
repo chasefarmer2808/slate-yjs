@@ -1,11 +1,12 @@
 import { Editor, Node, NodeOperation } from 'slate';
 import * as Y from 'yjs';
 import { SyncElement } from '../model';
-import { toSlatePath } from '../utils/convert';
+import { toSlatePath } from '../utils';
 
 /**
  * Translates a Yjs map event into a slate operations.
  *
+ * @param editor
  * @param event
  */
 export default function translateMapEvent(
@@ -16,7 +17,7 @@ export default function translateMapEvent(
   const targetSyncElement = event.target as SyncElement;
   const targetElement = Node.get(editor, targetPath);
 
-  const keyChanges = Array.from(event.changes.keys.entries());
+  const keyChanges = Array.from(event.changes.keys.entries()); // The keys whose values changes.
   const newProperties = Object.fromEntries(
     keyChanges.map(([key, info]) => [
       key,
@@ -25,7 +26,7 @@ export default function translateMapEvent(
   );
 
   const properties = Object.fromEntries(
-    keyChanges.map(([key]) => [key, targetElement[key]])
+    keyChanges.map(([key]) => [key, targetElement[key as keyof Node]])
   );
 
   return [{ type: 'set_node', newProperties, properties, path: targetPath }];
